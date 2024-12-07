@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--
+auth.html
+---------
+This HTML file serves as the Twitch authentication page for the user. It displays
+the status of the authentication process and handles token validation and saving.
+
+Sections:
+    - Head: Includes metadata, the page title, and a link to an external CSS file.
+    - Body: Displays the authentication progress and handles token processing.
+
+JavaScript Features:
+    - Generates falling Twitch emblems for a dynamic background effect.
+    - Extracts the token from the URL fragment.
+    - Sends the token to the server for validation and saving.
+    - Updates the page content dynamically based on the authentication status.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Authentication</title>
+
+    <!-- Link to external CSS for styling -->
+    <link rel="stylesheet" href="/static/auth_styles.css">
+</head>
+<body>
+    <!-- Spinning Twitch emblem -->
+    <div class="twitch-emblem"></div>
+
+    <!-- Main content container -->
+    <div class="container">
+        <h1>Authentication in Progress...</h1>
+        <p>Please wait while we validate your authentication.</p>
+    </div>
+
+    <script>
+        /**
+         * Generates falling Twitch emblems for a dynamic visual effect.
+         * Emblems are randomly positioned horizontally and have randomized falling durations.
+         */
+        function createFallingEmblem() {
+            const emblem = document.createElement('div');
+            emblem.className = 'falling-emblem';
+
+            // Randomize position and duration
+            emblem.style.left = Math.random() * window.innerWidth + 'px';
+            emblem.style.animationDuration = Math.random() * 3 + 3 + 's';
+
+            document.body.appendChild(emblem);
+
+            // Remove the emblem after its animation ends
+            emblem.addEventListener('animationend', () => {
+                emblem.remove();
+            });
+        }
+
+        // Generate a new falling emblem every 500 milliseconds
+        setInterval(createFallingEmblem, 500);
+
+        /**
+         * Extracts the access token from the URL fragment and sends it to the server.
+         * Updates the page content dynamically based on the authentication status.
+         */
+        const hash = window.location.hash.substring(1);  // Get the URL fragment
+        const params = new URLSearchParams(hash);
+        const token = params.get("access_token");  // Extract the access token
+
+        if (token) {
+            console.log("Token extracted:", token);  // Debugging log
+
+            // Send the token to the server for validation and saving
+            fetch("/api/save_token", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ access_token: token })
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        console.log("Token saved successfully.");
+                        // Show success message
+                        document.body.innerHTML = `
+                            <div class="container">
+                                <h1>Authentication Successful!</h1>
+                                <p>You can now close this window.</p>
+                            </div>`;
+                    } else {
+                        console.error("Failed to save token. Response:", response);
+                        // Show failure message for invalid token
+                        document.body.innerHTML = `
+                            <div class="container">
+                                <h1>Authentication Failed!</h1>
+                                <p>Invalid token.</p>
+                            </div>`;
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error sending token to server:", error);
+                    // Show failure message for communication errors
+                    document.body.innerHTML = `
+                        <div class="container">
+                            <h1>Authentication Failed!</h1>
+                            <p>An error occurred. Please try again.</p>
+                        </div>`;
+                });
+        } else {
+            console.error("No token found in the URL.");  // Debugging log
+            // Show failure message if no token is present in the URL fragment
+            document.body.innerHTML = `
+                <div class="container">
+                    <h1>Authentication Failed!</h1>
+                    <p>No token found in the fragment.</p>
+                </div>`;
+        }
+    </script>
+</body>
+</html>

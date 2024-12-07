@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--
+frontend.html
+-------------
+This HTML file serves as the main interface for displaying chat highlights
+received via Socket.IO. Messages include username, content, and a countdown timer.
+
+Features:
+    - Displays chat messages dynamically in a styled listbox.
+    - Uses WebSocket to receive messages from the server in real time.
+    - Supports user-defined text colors and removes expired messages.
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBS Highlight Display</title>
+
+    <!-- Link to external CSS for styling -->
+    <link rel="stylesheet" href="/static/frontend_styles.css">
+
+    <!-- Load Socket.IO client library for real-time communication -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <!-- Main container for the chat highlights -->
+    <div id="container">
+        <header>
+            <h1>Chat Highlights</h1>
+        </header>
+        <!-- Styled container for chat highlights -->
+        <div id="listbox" class="styled-scrollbar"></div>
+    </div>
+
+    <script>
+        /**
+         * Connects to the Socket.IO server and listens for updates.
+         * Displays received messages in a styled listbox.
+         */
+        const socket = io();
+
+        /**
+         * Logs a message when the client successfully connects to the WebSocket server.
+         */
+        socket.on("connect", () => {
+            console.log("Connected to Socket.IO server with ID:", socket.id);
+        });
+
+        /**
+         * Handles the `update_list` event, which provides new chat highlights.
+         * Displays the username, message, and a countdown timer.
+         */
+        socket.on("update_list", (data) => {
+            console.log("Received update_list event with data:", data);
+            const listBox = document.getElementById("listbox");
+
+            if (listBox) {
+                // Create a new div for the chat highlight
+                const newItem = document.createElement("div");
+                newItem.className = "listbox-item";
+
+                // Create a span for the username
+                const userSpan = document.createElement("span");
+                userSpan.className = "username";
+                userSpan.textContent = `${data.username}: `;
+
+                // Apply the username color if provided
+                if (data.username_colour) {
+                    userSpan.style.color = data.username_colour;
+                } else {
+                    console.warn("Username Colour is undefined, defaulting to white.");
+                    userSpan.style.color = "#FFFFFF"; // Default color
+                }
+
+                // Create a span for the chat message
+                const textSpan = document.createElement("span");
+                textSpan.className = "text";
+                textSpan.textContent = data.message;
+
+                // Create a span for the countdown timer
+                const timerSpan = document.createElement("span");
+                timerSpan.className = "timer";
+
+                // Calculate the expiry time
+                const timeout = data.timeout; // Timeout duration from the server (in ms)
+                const expiryTime = Date.now() + timeout;
+
+                // Formats the time remaining into a human-readable format
+                function formatTimeLeft() {
+                    const now = Date.now();
+                    const diff = expiryTime - now;
+
+                    if (diff <= 0) {
+                        return "0s";
+                    }
+
+                    const seconds = Math.floor((diff / 1000) % 60);
+                    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+
+                    if (hours > 0) {
+                        return `${hours}h ${minutes}m ${seconds}s`;
+                    } else if (minutes > 0) {
+                        return `${minutes}m ${seconds}s`;
+                    } else {
+                        return `${seconds}s`;
+                    }
+                }
+
+                // Updates the timer span with the remaining time
+                function updateTimer() {
+                    timerSpan.textContent = formatTimeLeft();
+                }
+
+                updateTimer(); // Initial timer update
+
+                // Interval to update the timer every second
+                const interval = setInterval(() => {
+                    updateTimer();
+                    if (Date.now() >= expiryTime) {
+                        // Remove the item once the timer expires
+                        clearInterval(interval);
+                        if (listBox.contains(newItem)) {
+                            listBox.removeChild(newItem);
+                        }
+                    }
+                }, 1000);
+
+                // Removes the item when clicked manually
+                newItem.onclick = () => {
+                    clearInterval(interval);
+                    listBox.removeChild(newItem);
+                };
+
+                // Append all spans to the chat highlight item
+                newItem.appendChild(userSpan);
+                newItem.appendChild(textSpan);
+                newItem.appendChild(timerSpan);
+                listBox.appendChild(newItem); // Add the new item to the listbox
+            } else {
+                console.error("Listbox element not found!");
+            }
+        });
+
+        /**
+         * Logs any connection errors to the console.
+         */
+        socket.on("connect_error", (error) => {
+            console.error("Socket.IO connection error:", error);
+        });
+
+        /**
+         * Logs a message when the client disconnects from the WebSocket server.
+         */
+        socket.on("disconnect", () => {
+            console.log("Disconnected from Socket.IO server");
+        });
+    </script>
+</body>
+</html>

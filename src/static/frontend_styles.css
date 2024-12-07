@@ -1,0 +1,104 @@
+/* 
+frontend_styles.css
+--------------------
+CSS file for styling the main chat highlight display (frontend.html).
+Includes layout, visual effects, and dynamic styling for chat messages.
+*/
+
+/* Global body styles */
+body {
+    margin: 0; /* Reset default margins */
+    padding: 0; /* Reset default padding */
+    display: flex; /* Center content using Flexbox */
+    justify-content: center; /* Horizontally center content */
+    align-items: center; /* Vertically center content */
+    height: 100vh; /* Full viewport height */
+    background-color: #121212; /* Sleek dark background */
+    color: #FFFFFF; /* White text for contrast */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern sans-serif font */
+}
+
+/* Main container for the chat display */
+#container {
+    width: 90%; /* Occupy 90% of viewport width */
+    max-width: 1200px; /* Limit the maximum width */
+    background: #1e1e1e; /* Dark background for the container */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Soft shadow for depth */
+    overflow: hidden; /* Prevent overflow from breaking layout */
+}
+
+/* Header styles */
+header {
+    background: linear-gradient(90deg, #9146FF, #6441A5); /* Gradient matching Twitch branding */
+    padding: 20px; /* Internal spacing */
+    text-align: center; /* Center-align header text */
+    color: white; /* White text for contrast */
+}
+
+header h1 {
+    margin: 0; /* Remove default margin */
+    font-size: 2rem; /* Large font size for title */
+}
+
+/* Chat highlights container */
+#listbox {
+    padding: 20px; /* Internal spacing */
+    height: 600px; /* Fixed height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    background: #232323; /* Slightly lighter background than container */
+    border-radius: 0 0 15px 15px; /* Rounded corners only at the bottom */
+    scrollbar-width: thin; /* Thin scrollbar for modern browsers */
+    scrollbar-color: #9146FF #2c2c2c; /* Custom scrollbar colors */
+}
+
+/* Scrollbar styles for WebKit-based browsers */
+.styled-scrollbar::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.styled-scrollbar::-webkit-scrollbar-track {
+    background: #2c2c2c; /* Track color */
+}
+
+.styled-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #9146FF; /* Thumb color */
+    border-radius: 4px; /* Rounded scrollbar thumb */
+}
+
+/* Individual chat message styles */
+.listbox-item {
+    display: flex; /* Arrange items in a row */
+    justify-content: space-between; /* Spread content evenly */
+    align-items: center; /* Align items vertically */
+    padding: 10px; /* Internal spacing */
+    margin-bottom: 10px; /* Space between items */
+    background: #2c2c2c; /* Slightly lighter background for messages */
+    border-radius: 10px; /* Rounded corners for messages */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover animations */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* Hover effect for chat messages */
+.listbox-item:hover {
+    transform: scale(1.02); /* Slightly enlarge on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+}
+
+/* Username styles in each chat message */
+.listbox-item .username {
+    font-weight: bold; /* Bold text for usernames */
+    margin-right: 8px; /* Space between username and message */
+}
+
+/* Message content styles */
+.listbox-item .text {
+    flex-grow: 1; /* Allow the message text to take up remaining space */
+    color: #b3b3b3; /* Light grey color for better readability */
+}
+
+/* Timer styles for each chat message */
+.listbox-item .timer {
+    font-size: 0.9rem; /* Slightly smaller font for timers */
+    color: #FFFFFF; /* White color for visibility */
+}

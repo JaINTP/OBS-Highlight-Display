@@ -1,0 +1,95 @@
+/* 
+auth_styles.css
+---------------
+CSS file for styling the Twitch authentication page (auth.html).
+Includes animations, layout styles, and fallback visual elements.
+*/
+
+/* Spin animation for the Twitch emblem */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Fall animation for Twitch emblems in the background */
+@keyframes fall {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+}
+
+/* Global body styles for the authentication page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #9146FF; /* Twitch purple */
+    color: white;
+    margin: 0;
+    overflow: hidden; /* Prevent scrollbars */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full view height */
+}
+
+/* Styling for the main Twitch emblem at the center */
+.twitch-emblem {
+    width: 100px;
+    height: 100px;
+    background-image: url('https://static.twitchcdn.net/assets/favicon-32-d6025c14e900565d6177.png');
+    background-size: cover;
+    animation: spin 10s linear infinite; /* Continuous rotation */
+    margin-bottom: 20px;
+}
+
+/* Container styles for the authentication status message */
+.container {
+    position: relative;
+    z-index: 2; /* Ensures container appears above falling emblems */
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+    padding: 20px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    line-height: 1.5;
+    display: block;
+}
+
+/* Heading styles */
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Paragraph text styles */
+p {
+    font-size: 1.2rem;
+}
+
+/* Falling emblem styles */
+.falling-emblem {
+    position: absolute;
+    top: 0;
+    z-index: 1; /* Ensures emblems are behind the container */
+    width: 32px;
+    height: 32px;
+    background-image: url('https://static.twitchcdn.net/assets/favicon-32-d6025c14e900565d6177.png');
+    background-size: cover;
+    animation: fall 5s linear infinite; /* Falling animation */
+}
+
+/* Alternate duration for odd emblems */
+.falling-emblem:nth-child(odd) {
+    animation-duration: 6s;
+}
+
+/* Alternate duration for even emblems */
+.falling-emblem:nth-child(even) {
+    animation-duration: 4s;
+}

@@ -1,0 +1,47 @@
+# YAML Configuration File for Twitch Flask-SocketIO Application
+
+# Twitch access token for API authentication.
+# If no valid token is available, it will be generated during the authentication process.
+access_token: null
+
+# URL for initiating the Twitch OAuth2 authorization flow.
+# Used to redirect the user to the Twitch login page for authentication.
+auth_url: https://id.twitch.tv/oauth2/authorize
+
+# Client ID for the Twitch application registered in the Twitch Developer Console.
+# This uniquely identifies the application when interacting with the Twitch API.
+client_id: your_client_id
+
+# Timeout duration for highlighted messages in milliseconds.
+# Specifies how long highlighted messages remain visible on the frontend display before being removed.
+highlight_timeout: 120000
+
+# Redirect URI for the OAuth2 authentication process.
+# Twitch redirects users to this URI after successful authentication.
+# This should match the "Redirect URI" defined in the Twitch Developer Console.
+redirect_uri: http://localhost:3000/
+
+# Refresh token for obtaining a new access token when the current one expires.
+# This is currently unused but may be utilized in future updates for seamless token refresh.
+refresh_token:
+
+# Server port configurations for the application.
+# These define the ports used by the authentication server and the web server.
+server_ports:
+  auth_server: 3000  # Port for the authentication server.
+  web_server: 5000   # Port for the main web server used by the application.
+
+# URL for token exchange.
+# Used for exchanging an authorization code or refresh token for an access token.
+token_url: https://id.twitch.tv/oauth2/token
+
+# Determines if messages containing the authenticated user's nickname (without an @mention)
+# should trigger a highlight.
+# - false: Only explicit @mentions of the user trigger highlights.
+# - true: Any message containing the user's nickname triggers a highlight.
+allow_non_mentions: false
+
+# Configures whether the bot should process its own messages.
+# - false: The bot ignores its own messages in chat.
+# - true: The bot processes its own messages like any other user's.
+process_own_messages: false
