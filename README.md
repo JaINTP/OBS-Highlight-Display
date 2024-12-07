@@ -25,7 +25,7 @@ This tool enables streamers to:
 ---
 
 ## Preview GIF
-![An animated example](https://i.imgur.com/8exxVBu.gif)
+![An animated example](art/preview.gif)
 
 ---
 
