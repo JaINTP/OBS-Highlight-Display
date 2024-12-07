@@ -24,6 +24,11 @@ This tool enables streamers to:
 
 ---
 
+## Preview GIF
+![An animated example](https://i.imgur.com/8exxVBu.gif)
+
+---
+
 ## Setup Instructions
 
 ### Prerequisites
