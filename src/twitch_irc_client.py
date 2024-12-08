@@ -22,6 +22,7 @@ __date__ = "08/12/2024"
 from twitchio.ext import commands
 from flask_socketio import SocketIO
 import requests
+import re
 
 
 class TwitchIRCClient(commands.Bot):
@@ -85,28 +86,41 @@ class TwitchIRCClient(commands.Bot):
         Args:
             message: TwitchIO message object representing a chat message.
         """
-        # Get all user defined words to be highlighted, if empty, use an empty list
-        words_to_highlight = self.config['words_to_highlight']['keywords']
-        if not isinstance(words_to_highlight, list):
-            words_to_highlight = []
-
-        # Determine if the bot should process its own messages
+        # Cache configuration values
+        words_to_highlight = self.config['words_to_highlight'].get('keywords', [])
+        case_sensitive = self.config['words_to_highlight'].get('case_sensitive', False)
+        match_whole_word = self.config['words_to_highlight'].get('match_whole_word', False)
         process_own_messages = self.config.get('process_own_messages', False)
+        allow_non_mentions = self.config.get('allow_non_mentions', False)
+        highlight_timeout = self.config.get('highlight_timeout', 5000)
+        authenticated_user = self.nick.lower()
 
-        # Ignore messages from the bot itself if not allowed
+        # Skip self-messages if not processing them
         if not process_own_messages and message.author.name.lower() == self.nick.lower():
             return
 
-        print(f"Message received from {message.author.display_name}: {message.content}")
+        # Prepare keywords for matching
+        if not case_sensitive:
+            words_to_highlight = {word.lower() for word in words_to_highlight}
+            message_content = message.content.lower()
+        else:
+            words_to_highlight = set(words_to_highlight)
+            message_content = message.content
 
-        # Check if the authenticated user's nickname is mentioned
-        authenticated_user = self.nick.lower()
-        is_mention = f"@{authenticated_user}" in message.content.lower()
-        allow_non_mentions = self.config.get('allow_non_mentions', False)
-        is_highlight = is_mention or (allow_non_mentions and authenticated_user in message.content.lower())
-        is_selected_word_highlight = any(word in message.content for word in words_to_highlight)
+        # Compile regex based on match_whole_word
+        if match_whole_word:
+            # Match whole words only
+            keyword_pattern = re.compile(r'\b(' + '|'.join(re.escape(word) for word in words_to_highlight) + r')\b')
+        else:
+            # Match partial words as well
+            keyword_pattern = re.compile('|'.join(re.escape(word) for word in words_to_highlight))
 
-        if is_highlight or is_selected_word_highlight:
+        # Check if the message meets highlighting criteria
+        is_mention = f"@{authenticated_user}" in message_content
+        is_keyword_highlight = keyword_pattern.search(message_content) is not None
+        is_highlight = is_mention or (allow_non_mentions and authenticated_user in message_content)
+
+        if is_highlight or is_keyword_highlight:
             # Emit the message data to the frontend via Flask-SocketIO
             try:
                 self.socketio.emit(
@@ -115,7 +129,7 @@ class TwitchIRCClient(commands.Bot):
                         'username': message.author.display_name,
                         'username_colour': message.author.color,
                         'message': message.content,
-                        'timeout': self.config.get('highlight_timeout', 5000)  # Default to 5000 ms if not set
+                        'timeout': highlight_timeout
                     },
                     namespace='/'
                 )
