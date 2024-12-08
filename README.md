@@ -211,9 +211,9 @@ words_to_highlight:
 ## TODO List
 
 - [ ] Consider switching configuration to json (Maybe)
-- [ ] Implement case-sensitive matching for keywords.
-- [ ] Add whole-word matching logic.
-- [ ] Optimize keyword search for large lists.
+- [x] Implement case-sensitive matching for keywords.
+- [x] Add whole-word matching logic.
+- [x] Optimize keyword search for large lists.
 - [ ] Update frontend styles for customizable highlights.
 - [ ] Write unit tests for the new features.
 - [ ] Implement testing for entire app.

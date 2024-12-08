@@ -57,7 +57,5 @@ words_to_highlight:
   #   - Jai's a great coder Kappa
   #   - Python Rocks
   keywords:
-  # The following configuration items aren't currently in use as they require
-  # a larger rewrite, but will be utilized in a future update.
   case_sensitive: false
   match_whole_word: false
