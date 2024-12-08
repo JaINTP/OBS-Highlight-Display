@@ -147,10 +147,79 @@ The app's interface is fully customizable via CSS. Styles are located in the `st
 
 ---
 
+## Highlighting Configuration
+
+The application supports highlighting specific keywords in chat messages. This feature is configurable through the `config.yaml` file. Here's how to set it up:
+
+---
+
+### Configuring Highlights
+
+1. **Locate the `words_to_highlight` Section**
+   - This section allows you to define specific keywords or phrases to highlight in chat messages.
+
+   Example configuration:
+   ```yaml
+   words_to_highlight:
+     keywords:
+       - Test
+       - Python Rocks
+     case_sensitive: false
+     match_whole_word: false
+   ```
+
+2. **Parameters**
+   - **`keywords`**: A list of words or phrases to highlight in messages.
+     - Example:
+       ```yaml
+       keywords:
+         - "Example"
+         - "Another Keyword"
+       ```
+   - **`case_sensitive`**: (Currently not implemented) Set to `true` to enable case-sensitive matching of keywords.
+   - **`match_whole_word`**: (Currently not implemented) Set to `true` to match only whole words, not substrings.
+
+3. **Customize Highlighting Behavior**
+   - **Case Sensitivity**: While this is defined in the configuration, it is not yet implemented in the code. Future updates will respect this setting.
+   - **Timeout**: Highlighted messages will disappear after the duration specified in the `highlight_timeout` parameter.
+
+### Default Configuration Example
+
+```yaml
+words_to_highlight:
+  keywords:
+    - "Highlight Me"
+    - "Chat Engagement"
+  case_sensitive: false
+  match_whole_word: false
+```
+
+### Notes
+
+- The keywords are matched against chat messages dynamically.
+- Highlighted messages will appear alongside nickname highlights.
+
+---
+
 ## Key Configurations
 
 - **Timeout Duration:** Control message visibility duration with `highlight_timeout`.
 - **Mentions and Own Messages:** Fine-tune behavior using `allow_non_mentions` and `process_own_messages`.
+
+---
+
+## TODO List
+
+- [ ] Consider switching configuration to json (Maybe)
+- [ ] Implement case-sensitive matching for keywords.
+- [ ] Add whole-word matching logic.
+- [ ] Optimize keyword search for large lists.
+- [ ] Update frontend styles for customizable highlights.
+- [ ] Write unit tests for the new features.
+- [ ] Implement testing for entire app.
+- [ ] Implement logging for easier troubleshooting.
+- [x] Add keyword highlighting logic.
+- [x] Add configuration section for keywords.
 
 ---
 
@@ -180,4 +249,3 @@ Contributions are welcome! Submit a pull request to improve functionality or doc
 ## Support
 
 For issues or queries, open a ticket on GitHub or contact the repository maintainer.
-
