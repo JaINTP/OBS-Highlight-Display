@@ -45,3 +45,19 @@ allow_non_mentions: false
 # - false: The bot ignores its own messages in chat.
 # - true: The bot processes its own messages like any other user's.
 process_own_messages: false
+
+# Configuration file for message processing
+words_to_highlight:
+ # A list of words or phrases to be highlighted in the message content.
+  # Each entry should be a string. If any word from this list appears
+  # in the message content, it will be highlighted.
+  # Example:
+  # keywords:
+  #   - Test
+  #   - Jai's a great coder Kappa
+  #   - Python Rocks
+  keywords:
+  # The following configuration items aren't currently in use as they require
+  # a larger rewrite, but will be utilized in a future update.
+  case_sensitive: false
+  match_whole_word: false

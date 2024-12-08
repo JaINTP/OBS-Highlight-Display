@@ -85,6 +85,11 @@ class TwitchIRCClient(commands.Bot):
         Args:
             message: TwitchIO message object representing a chat message.
         """
+        # Get all user defined words to be highlighted, if empty, use an empty list
+        words_to_highlight = self.config['words_to_highlight']['keywords']
+        if not isinstance(words_to_highlight, list):
+            words_to_highlight = []
+
         # Determine if the bot should process its own messages
         process_own_messages = self.config.get('process_own_messages', False)
 
@@ -99,8 +104,9 @@ class TwitchIRCClient(commands.Bot):
         is_mention = f"@{authenticated_user}" in message.content.lower()
         allow_non_mentions = self.config.get('allow_non_mentions', False)
         is_highlight = is_mention or (allow_non_mentions and authenticated_user in message.content.lower())
+        is_selected_word_highlight = any(word in message.content for word in words_to_highlight)
 
-        if is_highlight:
+        if is_highlight or is_selected_word_highlight:
             # Emit the message data to the frontend via Flask-SocketIO
             try:
                 self.socketio.emit(
