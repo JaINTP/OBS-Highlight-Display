@@ -24,9 +24,10 @@ This tool enables streamers to:
 
 ---
 
-## Preview GIF
+## Preview GIFs
 ![An animated example](art/preview.gif)
 
+![An animated example](art/preview-2.gif)
 ---
 
 ## Setup Instructions
